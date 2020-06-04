@@ -1,17 +1,22 @@
 import React from "react";
 import PersonPostForm from "./PersonPostForm";
-import { connect } from "react-redux";
+import axios from 'axios';
 
 class PersonList extends React.Component {
-  handleDeteleButtonClick = e => {
-    e.preventDefault();
-    const data = {
-      id: e.target.value
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      persons:[]
     };
-    this.props.dispatch({
-      type: "DELETE_PERSON",
-      data
-    });
+  }
+
+  componentDidMount() {
+    axios.get("http://127.0.0.1:8080/persons").then(res=> this.setState({persons: res.data}));
+  }
+
+  handleDeleteButtonClick = e => {
+
   };
 
   render() {
@@ -34,7 +39,7 @@ class PersonList extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.persons.map((item, i) => {
+            {this.state.persons.map((item, i) => {
               return (
                 <tr key={i}>
                   <td>{item.lastName}</td>
@@ -50,7 +55,7 @@ class PersonList extends React.Component {
                   <td>
                     <button
                       value={item.id}
-                      onClick={this.handleDeteleButtonClick}
+                      onClick={this.handleDeleteButtonClick}
                     >
                       delete
                     </button>
@@ -65,4 +70,4 @@ class PersonList extends React.Component {
   }
 }
 
-export default connect()(PersonList);
+export default PersonList;
